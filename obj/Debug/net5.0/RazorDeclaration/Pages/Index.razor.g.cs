@@ -98,8 +98,32 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 37 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
-       List<string> animalEmoji = new List<string>()
+#line 41 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
+       
+
+    /*DRAFT
+    
+            Requirement A: 
+
+                a.A countdown timer, once time runs out, the game is over. 
+                b.Each successful match earns one point.
+
+            Requirement B:
+
+                Use a Button controls interface to control the difficulty of the game. There are five 
+                levels represented by the numbers 5 to 10, which means the number of grids on the 
+                side of the square.
+
+            Requirement C:
+
+                Change the mechanics of the game so that only two neighboring animals can pair, 
+                and add new mechanics that can exchange the position of two animals that are next 
+                to each other.
+
+    */
+
+    //The list of emojis uesd to create matching game
+    List<string> animalEmoji = new List<string>()
         {
         "🐶","🐶",
         "🐺","🐺",
@@ -110,13 +134,15 @@ using System.Timers;
         "🐻","🐻",
         "🐭","🐭",
     };
-
+    //Create a list used to store after random order
     List<string> shuffledAnimals = new List<string>();
+
     int matchesfound = 0;
     Timer timer;
     int tenthsOfSecondsElapsed = 0;
     string timeDisplay;
 
+    //Initialize the game
     protected override void OnInitialized()
     {
         timer = new Timer(100);
@@ -124,6 +150,7 @@ using System.Timers;
         SetUpGame();
     }
 
+    //Build the game randomly again and initialize the score and timer
     private void SetUpGame()
     {
         Random random = new Random();
@@ -137,6 +164,7 @@ using System.Timers;
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
 
+    //Used to select the animal and test whether it is a match
     private void ButtonClick(string animal, string animalDescription)
     {
         if (lastAnimalFound == string.Empty)
@@ -156,7 +184,7 @@ using System.Timers;
             matchesfound++;
             if(matchesfound == 8)
             {
-                timer.Stop();sunyu
+                timer.Stop();
                 timeDisplay += " - Play Again?";
                 SetUpGame();
             }
@@ -166,7 +194,7 @@ using System.Timers;
             lastAnimalFound = string.Empty;
         }
     }
-
+    //Keep updating the time of the game and converting the result to a string
     private void Timer_Tick(Object source, ElapsedEventArgs e)
     {
         InvokeAsync(() =>
@@ -176,7 +204,7 @@ using System.Timers;
                 .ToString("0.0s");
             StateHasChanged();
         });
-        }
+    }
     
 
 #line default

@@ -90,7 +90,7 @@ using AnimalWebGame.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 28 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Shared\NavMenu.razor"
+#line 18 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Shared\NavMenu.razor"
        
     private bool collapseNavMenu = true;
 
