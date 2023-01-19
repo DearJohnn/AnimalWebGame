@@ -156,7 +156,7 @@ using System.Timers;
             matchesfound++;
             if(matchesfound == 8)
             {
-                timer.Stop();
+                timer.Stop();sunyu
                 timeDisplay += " - Play Again?";
                 SetUpGame();
             }
