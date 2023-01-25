@@ -98,33 +98,37 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 41 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
-       
+#line 47 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
+      
 
     /*DRAFT
-    
-            Requirement A: 
 
-                a.A countdown timer, once time runs out, the game is over. 
-                b.Each successful match earns one point.
+            Requirement A:
+
+                a.A countdown timer, once time runs out, the game is over.(partially implemented)
+                b.Create a bool variable to keep track of whether the player has scored consecutive points(needs debugging)
 
             Requirement B:
 
-                Use a Button controls interface to control the difficulty of the game. There are five 
-                levels represented by the numbers 5 to 10, which means the number of grids on the 
-                side of the square.
+                Use a Button controls interface to control the difficulty of the game. There are five
+                levels represented by the even number 4 to 10, which means the number of grids on the
+                side of the square.(needs debugging)
 
             Requirement C:
 
-                Change the mechanics of the game so that only two neighboring animals can pair, 
-                and add new mechanics that can exchange the position of two animals that are next 
-                to each other.
+                a.Change the mechanics of the game so that only two neighboring animals can pair,
+                and add new mechanics that can exchange the position of two animals that are next
+                to each other.(planned)
+
+                b.If a player scores consecutive points, new successful matches receive double points.(planned)
 
     */
 
+    int numberOfGrids = 24;
+
     //The list of emojis uesd to create matching game
     List<string> animalEmoji = new List<string>()
-        {
+{
         "🐶","🐶",
         "🐺","🐺",
         "🦄","🦄",
@@ -133,14 +137,41 @@ using System.Timers;
         "🦁","🦁",
         "🐻","🐻",
         "🐭","🐭",
+        "🐵","🐵",
+        "🦝","🦝",
+        "🐰","🐰",
+        "🐯","🐯",
+        "🐮","🐮",
+        "🐹","🐹",
+        "🦚‍","🦚‍",
+        "🐨‍","🐨‍",
+        "🦍‍","🦍‍",
+        "🐆‍","🐆‍",
+        "🦧‍","🦧‍",
+        "🐥‍","🐥‍",
+        "🐧‍","🐧‍",
+        "🦭‍","🦭‍",
+        "🦉‍","🦉‍",
+        "🦔‍","🦔‍",
+        "🐼‍","🐼‍",
+        "🐙‍","🐙‍",
+        "🦦‍","🦦‍",
+        "🦇‍","🦇‍",
+        "🦥‍","🦥‍",
+        "🦘","🦘",
+        "🌸‍","🌸",
+        "🐝‍","🐝",
+        "🦋‍","🦋",
     };
+
     //Create a list used to store after random order
     List<string> shuffledAnimals = new List<string>();
 
     int matchesfound = 0;
     Timer timer;
-    int tenthsOfSecondsElapsed = 0;
-    string timeDisplay;
+    int tenthsOfSecondsElapsed;
+    int timeRamaining = 600;
+    string timeDisplay = "60.0s";
 
     //Initialize the game
     protected override void OnInitialized()
@@ -153,28 +184,66 @@ using System.Timers;
     //Build the game randomly again and initialize the score and timer
     private void SetUpGame()
     {
+        List<string> setDifficulty = new List<string>(animalEmoji);
+        int delete = 66 - numberOfGrids;
+        setDifficulty.RemoveRange(numberOfGrids, delete);
         Random random = new Random();
-        shuffledAnimals = animalEmoji
+        shuffledAnimals = setDifficulty
             .OrderBy(item => random.Next())
             .ToList();
         matchesfound = 0;
-        tenthsOfSecondsElapsed = 0;
+        tenthsOfSecondsElapsed = timeRamaining;
     }
 
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
+    int lastIndex = -1;
 
     //Used to select the animal and test whether it is a match
-    private void ButtonClick(string animal, string animalDescription)
+    private void ButtonClick(string animal, string animalDescription, int index)
     {
         if (lastAnimalFound == string.Empty)
         {
             lastAnimalFound = animal;
             lastDescription = animalDescription;
+            lastIndex = index;
 
             timer.Start();
         }
-        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+        else
+        {
+            if (lastAnimalFound != animal)
+            {
+                lastAnimalFound = string.Empty;
+                string temp = shuffledAnimals[lastIndex];
+                shuffledAnimals[lastIndex] = shuffledAnimals[index];
+                shuffledAnimals[index] = temp;
+
+            }
+            else if (animalDescription != lastDescription)
+            {
+
+
+                lastAnimalFound = string.Empty;
+
+                shuffledAnimals = shuffledAnimals
+                    .Select(a => a.Replace(animal, string.Empty))
+                    .ToList();
+                matchesfound++;
+                if (matchesfound == numberOfGrids / 2)
+                {
+                    timer.Stop();
+                    timeDisplay += " - Play Again?";
+                    SetUpGame();
+                }
+
+            }
+            else
+            {
+                lastAnimalFound = string.Empty;
+            }
+        }
+        /*else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
         {
             lastAnimalFound = string.Empty;
 
@@ -182,7 +251,7 @@ using System.Timers;
                 .Select(a => a.Replace(animal, string.Empty))
                 .ToList();
             matchesfound++;
-            if(matchesfound == 8)
+            if (matchesfound == numberOfGrids/2)
             {
                 timer.Stop();
                 timeDisplay += " - Play Again?";
@@ -192,20 +261,33 @@ using System.Timers;
         else
         {
             lastAnimalFound = string.Empty;
-        }
+        }*/
     }
+
     //Keep updating the time of the game and converting the result to a string
     private void Timer_Tick(Object source, ElapsedEventArgs e)
     {
         InvokeAsync(() =>
         {
-            tenthsOfSecondsElapsed++;
-            timeDisplay = (tenthsOfSecondsElapsed / 10f)
-                .ToString("0.0s");
+            tenthsOfSecondsElapsed--;
+            timeDisplay = (tenthsOfSecondsElapsed / 10f).ToString("0.0s");
+
+            if (tenthsOfSecondsElapsed < 0)
+            {
+                timer.Stop();
+                timeDisplay = "0.0s - Play Again?";
+                lastAnimalFound = string.Empty;
+                SetUpGame();
+            }
+
             StateHasChanged();
         });
     }
-    
+    private void UpdateGrid(ChangeEventArgs e)
+    {
+        numberOfGrids = int.Parse(e.Value.ToString());
+        SetUpGame();
+    }
 
 #line default
 #line hidden

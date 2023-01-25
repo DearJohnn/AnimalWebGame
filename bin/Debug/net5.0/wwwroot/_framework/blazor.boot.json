@@ -195,11 +195,11 @@
       "mscorlib.dll": "sha256-zMI\/dXK7DoZZ9Qm9U9\/jRN4iQ9Ss3w8\/rwQQxC6SW9Y=",
       "netstandard.dll": "sha256-W3q3PN+lpRB+tRJEIhtMgYOGFv0pauEeeCS9iIRkKAM=",
       "System.Private.CoreLib.dll": "sha256-9rUJv1mXEQdGt\/kWiJ1ITPPzp3cAi3lSmqHVTisp7w0=",
-      "AnimalWebGame.dll": "sha256-9hmI6l8bwRJWdqc1aihRpCN8bTtVvfMOOKaAuap5O6g="
+      "AnimalWebGame.dll": "sha256-IGZFP0emdDLPxIhjdJY7X+8Kny9UykaR6RTPLrfQl6Y="
     },
     "lazyAssembly": null,
     "pdb": {
-      "AnimalWebGame.pdb": "sha256-FpPstBYCqiXekSl41jjCTZ3D+PJhfS9yIzBeaNQXfy8="
+      "AnimalWebGame.pdb": "sha256-bMuhyi4gByv5FUJVPUma66IfBlGoNUtb0t\/Z6KLrz\/U="
     },
     "runtime": {
       "dotnet.timezones.blat": "sha256-8oJip361m8OrfLRJOuIeswWKaoxtT27\/wINCxhn+s4c=",
