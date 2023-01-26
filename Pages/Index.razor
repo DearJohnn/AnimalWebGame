@@ -18,27 +18,30 @@
             <h3>Difficulty:</h3>
         </div>
         <div class="col-sm-8">
-
+            <!--Sliders control interface to control the difficulty level-->
             <input type="range" step="6" min="12" max="60" value="24" @onchange="UpdateGrid" />
         </div>
     </div>
         <!--Create a grid for the game-->
-        <div class="row mt-2">
-            @for (var animalNumber = 0; animalNumber < numberOfGrids; animalNumber++)
-            {
-                var animal = shuffledAnimals[animalNumber];
-                var uniqueDescription = $"Button #{animalNumber}";
-                var index = animalNumber;
-                var x = animalNumber % 6;
-                var y = animalNumber / 6;
+    <div class="row mt-2">
+        @for (var animalNumber = 0; animalNumber < numberOfGrids; animalNumber++)
+        {
+            var animal = shuffledAnimals[animalNumber];
+            var uniqueDescription = $"Button #{animalNumber}";
+            <!--The index of the button-->
+            var index = animalNumber;
+            <!--The horizontal index of the button-->
+            var x = animalNumber % 6;
+            <!--The vertical index of the button-->
+            var y = animalNumber / 6;
 
-                <div>
-                    <button @onclick="@(() => ButtonClick(animal, uniqueDescription, index, x, y))"
-                            type="button" class="btn btn-outline-dark">
-                        <h1>@animal</h1>
-                    </button>
-                </div>}
-        </div>
+            <div>
+                <button @onclick="@(() => ButtonClick(animal, uniqueDescription, index, x, y))"
+                        type="button" class="btn btn-outline-dark">
+                    <h1>@animal</h1>
+                </button>
+            </div>}
+    </div>
         <!--score-->
         <div>
             <h2>Matches found: @matchesfound</h2>
@@ -60,7 +63,7 @@
 
                 Requirement B:
 
-                    Use a Sliders controls interface to control the difficulty of the game.The player can change the difficulty of the game by sliding the slider to adjust the
+                    Use a Sliders control interface to control the difficulty of the game.The player can change the difficulty of the game by sliding the slider to adjust the
                     number of grids, adding or subtracting six grids at a time.(fully implemented)
 
                 Requirement C:
@@ -71,6 +74,7 @@
 
         */
 
+        //The initial number of grids
         int numberOfGrids = 24;
 
         //The list of emojis uesd to create matching game
@@ -144,8 +148,11 @@
 
         string lastAnimalFound = string.Empty;
         string lastDescription = string.Empty;
+        // last button's index
         int lastIndex;
+        // last button's vertical index
         int lastY;
+        // last button's horizontal index
         int lastX;
 
         //Used to select the animal and test whether it is a match
@@ -163,12 +170,14 @@
             }
             else
             {
+                //If the two selected cells are not the same and they are adjacent, they will be swapped
                 if (lastAnimalFound != animal)
                 {
                     lastAnimalFound = string.Empty;
-
+                    //When the absolute value of the difference between the abscissa of two animals plus only the absolute value of the difference between the ordinate is equal to 1, the two animals are next to each other.
                     if (Math.Abs(lastX - x) + Math.Abs(lastY - y) == 1)
                     {
+                        //created a temp string to store the last button and swapped the position of the last Index and the current Index button.
                         string temp = shuffledAnimals[lastIndex];
                         shuffledAnimals[lastIndex] = shuffledAnimals[index];
                         shuffledAnimals[index] = temp;
@@ -216,9 +225,10 @@
         {
             InvokeAsync(() =>
             {
+                //make the timer as a countdown timer
                 tenthsOfSecondsElapsed--;
                 timeDisplay = (tenthsOfSecondsElapsed / 10f).ToString("0.0s");
-
+                //when time is out the game would be reset
                 if (tenthsOfSecondsElapsed < 0)
                 {
                     timer.Stop();
@@ -230,6 +240,8 @@
                 StateHasChanged();
             });
         }
+
+        //Udpdate the new game difficulty level set by the player
         private void UpdateGrid(ChangeEventArgs e)
         {
             numberOfGrids = int.Parse(e.Value.ToString());
@@ -241,7 +253,7 @@
             matchesfound++;
 
         }
-
+        //Checks whether the current grid matches the grid to the right
         private void MatchRight(int r)
         {
             if (shuffledAnimals[r] == shuffledAnimals[r + 1] && shuffledAnimals[r] != string.Empty)
@@ -251,6 +263,7 @@
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the left
         private void MatchLeft(int l)
         {
             if (shuffledAnimals[l] == shuffledAnimals[l - 1] && shuffledAnimals[l] != string.Empty)
@@ -260,6 +273,7 @@
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the top
         private void MatchTop(int t)
         {
             if (shuffledAnimals[t] == shuffledAnimals[t - 6] && shuffledAnimals[t] != string.Empty)
@@ -269,6 +283,7 @@
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the bottom
         private void MatchBottom(int b)
         {
             if (shuffledAnimals[b] == shuffledAnimals[b + 6] && shuffledAnimals[b] != string.Empty)
@@ -279,8 +294,10 @@
             }
         }
 
+        //Cover different corner cases
         private void MatchCheck(int i, int j)
         {
+            //when the grid move to the first only need to check right and bottom grid
             if (i == 0 || j == 0)
             {
                 MatchRight(i);
@@ -288,6 +305,7 @@
                 MatchRight(j);
                 MatchBottom(j);
             }
+            //when the grid move to the last only need to check left and top grid
             else if (i == shuffledAnimals.Count - 1 || j == shuffledAnimals.Count - 1)
             {
                 MatchLeft(i);
@@ -296,6 +314,7 @@
                 MatchTop(j);
 
             }
+            //when the grid move to the top row only need to check left, right and bottom grid
             else if (i - 6 < 0 || j - 6 < 0)
             {
                 MatchRight(i);
@@ -305,6 +324,7 @@
                 MatchLeft(j);
                 MatchBottom(j);
             }
+            //when the grid move to the bottom row only need to check left, right and top grid
             else if (i + 6 > shuffledAnimals.Count - 1 || j + 6 > shuffledAnimals.Count - 1)
             {
                 MatchRight(i);

@@ -98,7 +98,7 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 53 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
+#line 56 "D:\6308\C#\Week1\AnimalWebGame\AnimalWebGame\Pages\Index.razor"
           
 
         /*DRAFT
@@ -109,7 +109,7 @@ using System.Timers;
 
                 Requirement B:
 
-                    Use a Sliders controls interface to control the difficulty of the game.The player can change the difficulty of the game by sliding the slider to adjust the
+                    Use a Sliders control interface to control the difficulty of the game.The player can change the difficulty of the game by sliding the slider to adjust the
                     number of grids, adding or subtracting six grids at a time.(fully implemented)
 
                 Requirement C:
@@ -120,6 +120,7 @@ using System.Timers;
 
         */
 
+        //The initial number of grids
         int numberOfGrids = 24;
 
         //The list of emojis uesd to create matching game
@@ -193,8 +194,11 @@ using System.Timers;
 
         string lastAnimalFound = string.Empty;
         string lastDescription = string.Empty;
+        // last button's index
         int lastIndex;
+        // last button's vertical index
         int lastY;
+        // last button's horizontal index
         int lastX;
 
         //Used to select the animal and test whether it is a match
@@ -212,12 +216,14 @@ using System.Timers;
             }
             else
             {
+                //If the two selected cells are not the same and they are adjacent, they will be swapped
                 if (lastAnimalFound != animal)
                 {
                     lastAnimalFound = string.Empty;
-
+                    //When the absolute value of the difference between the abscissa of two animals plus only the absolute value of the difference between the ordinate is equal to 1, the two animals are next to each other.
                     if (Math.Abs(lastX - x) + Math.Abs(lastY - y) == 1)
                     {
+                        //created a temp string to store the last button and swapped the position of the last Index and the current Index button.
                         string temp = shuffledAnimals[lastIndex];
                         shuffledAnimals[lastIndex] = shuffledAnimals[index];
                         shuffledAnimals[index] = temp;
@@ -265,9 +271,10 @@ using System.Timers;
         {
             InvokeAsync(() =>
             {
+                //make the timer as a countdown timer
                 tenthsOfSecondsElapsed--;
                 timeDisplay = (tenthsOfSecondsElapsed / 10f).ToString("0.0s");
-
+                //when time is out the game would be reset
                 if (tenthsOfSecondsElapsed < 0)
                 {
                     timer.Stop();
@@ -279,6 +286,8 @@ using System.Timers;
                 StateHasChanged();
             });
         }
+
+        //Udpdate the new game difficulty level set by the player
         private void UpdateGrid(ChangeEventArgs e)
         {
             numberOfGrids = int.Parse(e.Value.ToString());
@@ -290,7 +299,7 @@ using System.Timers;
             matchesfound++;
 
         }
-
+        //Checks whether the current grid matches the grid to the right
         private void MatchRight(int r)
         {
             if (shuffledAnimals[r] == shuffledAnimals[r + 1] && shuffledAnimals[r] != string.Empty)
@@ -300,6 +309,7 @@ using System.Timers;
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the left
         private void MatchLeft(int l)
         {
             if (shuffledAnimals[l] == shuffledAnimals[l - 1] && shuffledAnimals[l] != string.Empty)
@@ -309,6 +319,7 @@ using System.Timers;
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the top
         private void MatchTop(int t)
         {
             if (shuffledAnimals[t] == shuffledAnimals[t - 6] && shuffledAnimals[t] != string.Empty)
@@ -318,6 +329,7 @@ using System.Timers;
                 UpdatePoints();
             }
         }
+        //Checks whether the current grid matches the grid to the bottom
         private void MatchBottom(int b)
         {
             if (shuffledAnimals[b] == shuffledAnimals[b + 6] && shuffledAnimals[b] != string.Empty)
@@ -328,8 +340,10 @@ using System.Timers;
             }
         }
 
+        //Cover different corner cases when the grid move to the first or last 
         private void MatchCheck(int i, int j)
         {
+            //when the grid move to the first only need to check right and bottom grid
             if (i == 0 || j == 0)
             {
                 MatchRight(i);
@@ -337,6 +351,7 @@ using System.Timers;
                 MatchRight(j);
                 MatchBottom(j);
             }
+            //when the grid move to the last only need to check left and top grid
             else if (i == shuffledAnimals.Count - 1 || j == shuffledAnimals.Count - 1)
             {
                 MatchLeft(i);
@@ -345,6 +360,7 @@ using System.Timers;
                 MatchTop(j);
 
             }
+            //when the grid move to the top row only need to check left, right and bottom grid
             else if (i - 6 < 0 || j - 6 < 0)
             {
                 MatchRight(i);
@@ -354,6 +370,7 @@ using System.Timers;
                 MatchLeft(j);
                 MatchBottom(j);
             }
+            //when the grid move to the bottom row only need to check left, right and top grid
             else if (i + 6 > shuffledAnimals.Count - 1 || j + 6 > shuffledAnimals.Count - 1)
             {
                 MatchRight(i);
